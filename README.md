@@ -1,3 +1,4 @@
+[![ci-test](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml/badge.svg)](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml)
 ### Bank Application
 
 * Script usado no TablePlus para identificar um dos Deadlock's
