@@ -1,6 +1,8 @@
 [![ci-test](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml/badge.svg)](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml)
-### Bank Application
+# Bank Application
 
+---
+## Deadlock
 * Script usado no TablePlus para identificar um dos Deadlock's
 * `SELECT
   a.application_name,
@@ -25,3 +27,23 @@
 * Resumo: O Deadlock ocorre, pois, ambas as transações concorrentes, **precisam aguardar a outra terminar.**
 * Para resolver, precisei mover a ordem do UPDATE da transação 2. Agora ambas as transações 1 e 2 **sempre irão atualizar a account1 antes da account2**.
 * A melhor maneira de prevenir deadlocks é fazer com que a aplicação sempre **adquira locks em uma ordem consistente!**
+
+---
+## Validação
+### Oneof
+Com esse pequeno código `oneof`, o Gin valida o input, **obrigando que seja BRL.**
+![img_3.png](img_3.png)
+
+Ao passar uma string vazia ou um câmbio monetário inválido, ele retorna um **erro**.
+![img_4.png](img_4.png)
+
+### Min
+O `min=1` valida que o ID deve ser no mínimo um **inteiro positivo 1**
+
+![img_5.png](img_5.png)
+
+Exemplo de erro no Postman:
+![img_6.png](img_6.png)
+
+---
+## Paginação
