@@ -1,7 +1,7 @@
 package db
 
 import (
-	"context" //
+	"context"
 	"database/sql"
 	"github.com/IgorCastilhos/BankProgram/utils"
 	"github.com/stretchr/testify/require"
