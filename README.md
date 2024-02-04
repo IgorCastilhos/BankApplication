@@ -1,6 +1,10 @@
 [![ci-test](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml/badge.svg)](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml)
 # Bank Application
 
+## Database Design
+
+![image](https://github.com/IgorCastilhos/BankApplication/assets/101683017/761b2b23-b0b7-499d-b66f-49c271e74eb9)
+
 ---
 ## Deadlock
 Script usado no TablePlus para identificar um dos Deadlock's
