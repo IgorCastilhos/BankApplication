@@ -86,3 +86,11 @@ O `min=1` valida que o ID deve ser no mínimo um **inteiro positivo 1**
 1. Implemente um banco de dados falso ou "fake", que armazena dados em memória.
    * Um porém: criar estruturas e funções pode demandar muito tempo, por isso utilizei GoMock nesse projeto.
 2. GoMock gera e constrói stubs, que retornam dados hardcoded para cada cenário que queremos testar.
+
+---
+## Hash Password com o pacote Bcrypt em Go
+![image](https://github.com/IgorCastilhos/BankApplication/assets/101683017/89e6d19d-5b32-4325-9091-f3b563b15c94)
+* Todo: Adicionar explicação de como funciona o pacote
+
+![image](https://github.com/IgorCastilhos/BankApplication/assets/101683017/6094f39a-0f27-420d-a2a4-9079ab0cce95)
+
