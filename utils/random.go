@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/IgorCastilhos/toolkit/v2" // Módulo para gerar strings aleatórias
 	"math/rand"
 	"time"
@@ -35,9 +36,16 @@ func RandomMoney() int64 {
 }
 
 // RandomCurrency gera uma string representando uma moeda aleatória.
-// Atualmente, a função retorna "BRL" como única opção, mas pode ser expandida para incluir mais moedas.
+// Atualmente, a função retorna "BRL", "USD" e "EUR" como opções de câmbio monetário, mas pode ser expandida
+// para incluir mais moedas. Cuidado para estar de acordo com o Banco de Dados e lembrar de adicionar o novo câmbio
+// em utils/currency.go para verificação.
 func RandomCurrency() string {
-	currencies := []string{"BRL"}
+	currencies := []string{BRL, USD, EUR}
 	n := len(currencies)
 	return currencies[rand.Intn(n)]
+}
+
+// RandomEmail gera uma string representando um email aleatório
+func RandomEmail() string {
+	return fmt.Sprintf("%s@email.com", tools.RandomString(6))
 }

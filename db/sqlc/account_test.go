@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 	"database/sql"
-	"github.com/IgorCastilhos/BankProgram/utils"
+	"github.com/IgorCastilhos/BankApplication/utils"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
@@ -12,9 +12,11 @@ import (
 // createRandomAccount cria uma conta com valores aleatórios e retorna essa conta.
 // Utiliza funções do pacote utils para gerar valores aleatórios para os campos da conta.
 // Realiza várias verificações para assegurar que a conta foi criada corretamente.
-func createRandomAccount(t *testing.T) Account { //
+func createRandomAccount(t *testing.T) Account {
+	user := createRandomUser(t)
+
 	arg := CreateAccountParams{
-		Owner:    utils.RandomOwner(),
+		Owner:    user.Username,
 		Balance:  utils.RandomMoney(),
 		Currency: utils.RandomCurrency(),
 	}

@@ -6,6 +6,10 @@ const (
 	EUR = "EUR"
 )
 
-func ()  {
-	
+func IsSupportedCurrency(currency string) bool {
+	switch currency {
+	case BRL, USD, EUR:
+		return true
+	}
+	return false
 }

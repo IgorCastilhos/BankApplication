@@ -3,6 +3,8 @@ package api
 import (
 	db "github.com/IgorCastilhos/BankApplication/db/sqlc"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 // Server define as requisições HTTP para o serviço bancário
@@ -15,6 +17,13 @@ type Server struct {
 func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
+
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		err := v.RegisterValidation("currency", validCurrency)
+		if err != nil {
+			return nil
+		}
+	}
 
 	// Adiciona rotas ao roteador
 	router.POST("/accounts", server.createAccount)
