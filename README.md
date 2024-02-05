@@ -1,7 +1,101 @@
 [![ci-test](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml/badge.svg)](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml)
 # Bank Application
 
-## Database Design
+
+## Setup do ambiente de desenvolvimento
+
+### Instale essas ferramentas
+
+- [Docker desktop](https://www.docker.com/products/docker-desktop)
+- [TablePlus](https://tableplus.com/)
+- [Golang](https://golang.org/)
+- [Homebrew](https://brew.sh/)
+- [Migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) (Linux/Mac)
+
+    ```bash
+    brew install golang-migrate
+    ```
+
+- [Sqlc](https://github.com/kyleconroy/sqlc#installation)
+
+    ```bash
+    brew install sqlc
+    ```
+
+- [Gomock](https://github.com/golang/mock)
+
+    ``` bash
+    go install github.com/golang/mock/mockgen@v1.6.0
+    ```
+
+### Setup da infraestrutura
+
+- Inicie o contêiner postgres:
+
+    ```bash
+    make postgres
+    ```
+
+- Crie o banco de dados 'bank':
+
+    ```bash
+    make createdb
+    ```
+
+- Execute a migração do banco de dados em todas as versões:
+
+    ```bash
+    make migrateup
+    ```
+
+- Execute a migração do banco de dados para uma versão acima:
+
+    ```bash
+    make migrateup1
+    ```
+
+- Execute o migratedown para voltar todas as versões:
+
+    ```bash
+    make migratedown
+    ```
+
+- Execute o migratedown1 para uma versão anterior:
+
+    ```bash
+    make migratedown1
+    ```
+
+
+### Como gerar código
+
+- Gere o CRUD SQL com sqlc:
+
+    ```bash
+    make sqlc
+    ```
+
+- Gere a simulação de banco de dados(mock) com gomock:
+
+    ```bash
+    make mock
+    ```
+
+### Como executar
+
+- Execute o servidor:
+
+    ```bash
+    make server
+    ```
+
+- Execute os testes:
+
+    ```bash
+    make test
+    ```
+    
+## Design do banco de dados
 
 ![image](https://github.com/IgorCastilhos/BankApplication/assets/101683017/761b2b23-b0b7-499d-b66f-49c271e74eb9)
 
