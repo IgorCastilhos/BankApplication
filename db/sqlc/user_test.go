@@ -3,18 +3,24 @@ package db
 import (
 	"context"
 	"github.com/IgorCastilhos/BankApplication/utils"
+	"github.com/IgorCastilhos/toolkit/v2"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
 )
 
+var tool toolkit.Tools
+
 // createRandomAccount cria uma conta com valores aleatórios e retorna essa conta.
 // Utiliza funções do pacote utils para gerar valores aleatórios para os campos da conta.
 // Realiza várias verificações para assegurar que a conta foi criada corretamente.
 func createRandomUser(t *testing.T) User {
+	hashedPassword, err := utils.HashPassword(tool.RandomString(6))
+	require.NoError(t, err)
+
 	arg := CreateUserParams{
 		Username:       utils.RandomOwner(),
-		HashedPassword: "secret",
+		HashedPassword: hashedPassword,
 		FullName:       utils.RandomOwner(),
 		Email:          utils.RandomEmail(),
 	}
