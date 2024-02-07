@@ -1,6 +1,6 @@
 module github.com/IgorCastilhos/BankApplication
 
-go 1.22rc2
+go 1.22
 
 require (
 	github.com/IgorCastilhos/toolkit/v2 v2.0.0
