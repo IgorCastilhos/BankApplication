@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	db "github.com/IgorCastilhos/BankApplication/db/sqlc"
+	"github.com/IgorCastilhos/BankApplication/token"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 	"net/http"
@@ -12,7 +13,6 @@ import (
 // createAccountRequest define os dados que uma nova conta deve possuir.
 // O balance (saldo) é iniciado em 0.
 type createAccountRequest struct {
-	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,currency"`
 }
 
@@ -24,8 +24,9 @@ func (server *Server) createAccount(ctx *gin.Context) {
 	}
 
 	// Se for válido...
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.CreateAccountParams{
-		Owner:    request.Owner,
+		Owner:    authPayload.Username,
 		Currency: request.Currency,
 		Balance:  0,
 	}
@@ -68,6 +69,13 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if account.Owner != authPayload.Username {
+		err = errors.New("esta conta não pertence ao usuário autenticado")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
 	ctx.JSON(http.StatusOK, account)
 }
 
@@ -83,7 +91,9 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.ListAccountsParams{
+		Owner:  authPayload.Username,
 		Limit:  request.PageSize,
 		Offset: (request.PageID - 1) * request.PageSize,
 	}
