@@ -1,6 +1,7 @@
 [![ci](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml/badge.svg)](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml)
 # Bank Application
 
+* Esta é uma aplicação que simula um Internet Banking, onde o cliente pode criar uma conta e realizar uma transferência. Cada cliente pode ter mais de uma conta, porém, somente uma por câmbio monetário.
 
 ## Setup do ambiente de desenvolvimento
 
