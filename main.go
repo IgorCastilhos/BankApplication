@@ -1,11 +1,11 @@
 package main
 
 import (
-	"database/sql"
+	"context"
 	"github.com/IgorCastilhos/BankApplication/api"
 	db "github.com/IgorCastilhos/BankApplication/db/sqlc"
 	"github.com/IgorCastilhos/BankApplication/utils"
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
 )
 
@@ -15,12 +15,12 @@ func main() {
 		log.Fatal("não pôde carregar as configurações", err)
 	}
 
-	conn, err := sql.Open(config.DBDriver, config.DBSource)
+	connPool, err := pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
-		log.Fatal("cannot connect to db:", err)
+		log.Fatal("não foi possível conectar ao banco de dados:", err)
 	}
 
-	store := db.NewStore(conn)
+	store := db.NewStore(connPool)
 	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatal("não foi possível criar o servidor:", err)

@@ -82,6 +82,12 @@
     make mock
     ```
 
+- Cria uma nova migração no banco de dados:
+
+    ```bash
+    migrate create -ext sql -dir db/migration -seq <migration_name>
+    ```
+
 ### Como executar
 
 - Execute o servidor:
