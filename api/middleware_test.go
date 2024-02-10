@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/IgorCastilhos/BankApplication/token"
+	"github.com/IgorCastilhos/BankApplication/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 	"net/http"
@@ -17,16 +18,21 @@ func addAuthorization(
 	tokenMaker token.Maker,
 	authorizationType string,
 	username string,
+	role string,
 	duration time.Duration,
 ) {
-	tokenTest, err := tokenMaker.CreateToken(username, duration)
+	tokenTest, payload, err := tokenMaker.CreateToken(username, role, duration)
 	require.NoError(t, err)
+	require.NoError(t, payload)
 
 	authorizationHeader := fmt.Sprintf("%s %s", authorizationType, tokenTest)
 	request.Header.Set(authorizationHeaderKey, authorizationHeader)
 }
 
 func TestAuthMiddleware(t *testing.T) {
+	username := utils.RandomOwner()
+	role := utils.DepositorRole
+
 	testCases := []struct {
 		name          string
 		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
@@ -35,7 +41,7 @@ func TestAuthMiddleware(t *testing.T) {
 		{
 			name: "OK - Caminho feliz",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, "user", time.Minute)
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, username, role, time.Minute)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
@@ -52,7 +58,7 @@ func TestAuthMiddleware(t *testing.T) {
 		{
 			name: "Erro - Tipo de autorização não autorizado",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, "unsuported", "user", time.Minute)
+				addAuthorization(t, request, tokenMaker, "unsupported", username, role, time.Minute)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusUnauthorized, recorder.Code)
@@ -61,7 +67,7 @@ func TestAuthMiddleware(t *testing.T) {
 		{
 			name: "Erro - Formato de autorização inválido [prefixo]",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, "", "user", time.Minute)
+				addAuthorization(t, request, tokenMaker, "", username, role, time.Minute)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusUnauthorized, recorder.Code)
@@ -70,7 +76,7 @@ func TestAuthMiddleware(t *testing.T) {
 		{
 			name: "Erro - Token de acesso expirado",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, "user", -time.Minute)
+				addAuthorization(t, request, tokenMaker, "unsupported", username, role, -time.Minute)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusUnauthorized, recorder.Code)

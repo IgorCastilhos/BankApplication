@@ -25,7 +25,7 @@ func createRandomUser(t *testing.T) User {
 		Email:          utils.RandomEmail(),
 	}
 
-	user, err := testQueries.CreateUser(context.Background(), arg)
+	user, err := testStore.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
 
@@ -50,7 +50,7 @@ func TestCreateUser(t *testing.T) {
 // Cria uma conta, recupera essa conta e verifica se os dados recuperados correspondem aos dados da conta criada.
 func TestGetUser(t *testing.T) {
 	user1 := createRandomUser(t)
-	user2, err := testQueries.GetUser(context.Background(), user1.Username)
+	user2, err := testStore.GetUser(context.Background(), user1.Username)
 	require.NoError(t, err)
 	require.NotEmpty(t, user2)
 	require.Equal(t, user1.Username, user2.Username)
