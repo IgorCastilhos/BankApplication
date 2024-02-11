@@ -3,29 +3,29 @@ package token
 import (
 	"errors"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
-// minSecretKeySize a chave secreta deve conter no mínimo 32 caracteres
 const minSecretKeySize = 32
 
-// JWTMaker é uma estrutura que cria um JSON Web Token. Ela implementa a interface Maker.
+// JWTMaker is a JSON Web Token maker
 type JWTMaker struct {
 	secretKey string
 }
 
-// NewJWTMaker cria um novo JWTMaker
+// NewJWTMaker creates a new JWTMaker
 func NewJWTMaker(secretKey string) (Maker, error) {
 	if len(secretKey) < minSecretKeySize {
-		return nil, fmt.Errorf("invalid key size: must be at least %d characters long", minSecretKeySize)
+		return nil, fmt.Errorf("invalid key size: must be at least %d characters", minSecretKeySize)
 	}
 	return &JWTMaker{secretKey}, nil
 }
 
-// CreateToken cria um novo token para um usuário específico com uma duração
-func (maker *JWTMaker) CreateToken(username string, duration time.Duration) (string, *Payload, error) {
-	payload, err := NewPayload(username, duration)
+// CreateToken creates a new token for a specific username and duration
+func (maker *JWTMaker) CreateToken(username string, role string, duration time.Duration) (string, *Payload, error) {
+	payload, err := NewPayload(username, role, duration)
 	if err != nil {
 		return "", payload, err
 	}
@@ -35,7 +35,7 @@ func (maker *JWTMaker) CreateToken(username string, duration time.Duration) (str
 	return token, payload, err
 }
 
-// VerifyToken verifica se o token é válido ou não
+// VerifyToken checks if the token is valid or not
 func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
@@ -44,6 +44,7 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 		}
 		return []byte(maker.secretKey), nil
 	}
+
 	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, keyFunc)
 	if err != nil {
 		var verr *jwt.ValidationError
@@ -58,5 +59,6 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 	if !ok {
 		return nil, ErrInvalidToken
 	}
+
 	return payload, nil
 }
