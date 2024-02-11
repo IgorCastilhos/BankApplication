@@ -26,7 +26,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 	}
 
 	accessToken, accessPayload, err := server.tokenMaker.CreateToken(
-		user.Username, role, server.config.AccessTokenDuration,
+		user.Username, user.Role, server.config.AccessTokenDuration,
 	)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 
 	refreshToken, refreshPayload, err := server.tokenMaker.CreateToken(
 		user.Username,
-		role,
+		user.Role,
 		server.config.RefreshTokenDuration,
 	)
 
