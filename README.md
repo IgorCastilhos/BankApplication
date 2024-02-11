@@ -1,7 +1,6 @@
 [![ci](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml/badge.svg)](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml)
 # Bank Application
 
-* Esta é uma aplicação que simula um Internet Banking, onde o cliente pode criar uma conta e realizar uma transferência. Cada cliente pode ter mais de uma conta, porém, somente uma por câmbio monetário.
 
 ## Setup do ambiente de desenvolvimento
 
@@ -191,57 +190,7 @@ O `min=1` valida que o ID deve ser no mínimo um **inteiro positivo 1**
 ---
 ## Hash Password com o pacote Bcrypt em Go
 ![image](https://github.com/IgorCastilhos/BankApplication/assets/101683017/89e6d19d-5b32-4325-9091-f3b563b15c94)
-**Bcrypt** é uma função de hashing de senha projetada especificamente para proteção de senhas armazenadas. Desenvolvida por Niels Provos e David Mazières para o sistema operacional OpenBSD, ela é baseada no ciframento Blowfish e é amplamente utilizada devido à sua segurança e eficiência. O Bcrypt é projetado para ser lento de propósito, o que é uma característica desejável para funções de hashing de senha, tornando ataques de força bruta muito menos eficazes.
+* Todo: Adicionar explicação de como funciona o pacote
 
-### Características principais do Bcrypt:
-
-- **Custo Adaptável:** Bcrypt permite ajustar o custo (ou fator de trabalho), que é basicamente quantas vezes o hashing é processado. Isso torna o algoritmo escalável; à medida que o hardware fica mais rápido, o custo pode ser aumentado para tornar o hash mais lento.
-- **Sal Integrado:** Para proteger contra ataques de dicionário e uso de tabelas rainbow, o Bcrypt automaticamente gera e incorpora um sal (um valor aleatório) às senhas antes de aplicar o hash. Isso garante que hashes de duas instâncias da mesma senha sejam diferentes.
-- **Resistente a Ataques de Força Bruta:** Devido à sua natureza inerentemente lenta e ao custo adaptável, o Bcrypt é resistente a ataques de força bruta.
-
-### Como o Bcrypt é usado:
-
-1. **Hashing de Senhas:** Ao armazenar uma senha, você não armazena a senha em si, mas um hash bcrypt dela. Quando um usuário fornece uma senha, você aplica o mesmo processo de hash à senha fornecida e compara com o hash armazenado.
-2. **Verificação de Senhas:** Para verificar uma senha, o Bcrypt extrai o sal do hash armazenado (já que o sal é armazenado junto com o hash), aplica o hash à senha fornecida usando esse sal e verifica se o resultado corresponde ao hash armazenado.
-
-### Exemplo em Go:
-
-Para usar o Bcrypt em Go, você pode utilizar o pacote `golang.org/x/crypto/bcrypt`. Aqui está um exemplo simples de como hashar e verificar uma senha com Bcrypt em Go:
-
-```go
-package main
-
-import (
-	"fmt"
-	"golang.org/x/crypto/bcrypt"
-)
-
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(bytes), err
-}
-
-func checkPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
-}
-
-func main() {
-	password := "mySecretPassword"
-	hashedPassword, err := hashPassword(password)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Hashed password:", hashedPassword)
-
-	match := checkPasswordHash("mySecretPassword", hashedPassword)
-	fmt.Println("Password match:", match) // Deve ser true
-
-	match = checkPasswordHash("wrongPassword", hashedPassword)
-	fmt.Println("Password match:", match) // Deve ser false
-}
-```
-
-Neste exemplo, `bcrypt.GenerateFromPassword` é usado para criar um hash da senha com um sal gerado automaticamente e um custo padrão. Para verificar a senha, `bcrypt.CompareHashAndPassword` compara o hash da senha armazenada com o hash da senha fornecida pelo usuário.
-
+![image](https://github.com/IgorCastilhos/BankApplication/assets/101683017/6094f39a-0f27-420d-a2a4-9079ab0cce95)
 

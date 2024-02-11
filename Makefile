@@ -1,5 +1,7 @@
 DB_URL=postgresql://root:secret@localhost:5432/bank?sslmode=disable
 
+# Digite -> Make [Nome do comando]
+
 postgres:
 	docker run --name postgres16.1 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:16.1-alpine
 
@@ -45,4 +47,14 @@ server:
 mock:
 	mockgen -package mockdb -destination db/mock/store.go  github.com/IgorCastilhos/BankApplication/db/sqlc Store
 
-.PHONY: postgres createdb dropdb migrateup migratedown migrateup1 migratedown1 test docker_start docker_stop server mock db_docs db_schema
+proto:
+	rm -f pb/*.go
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	--grpc_gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+	proto/*.proto
+
+evans:
+	evans --host localhost --port 9090 -r repl
+
+.PHONY: postgres createdb dropdb migrateup migratedown migrateup1 migratedown1 test docker_start docker_stop server mock db_docs db_schema proto evans
