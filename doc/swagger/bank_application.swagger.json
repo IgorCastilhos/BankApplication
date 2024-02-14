@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Bank Application API",
-    "version": "1.0",
+    "version": "1.1",
     "contact": {
       "name": "Igor Castilhos",
       "url": "https://github.com/IgorCastilhos",
@@ -23,6 +23,8 @@
   "paths": {
     "/v1/create_user": {
       "post": {
+        "summary": "Cria um novo usuário",
+        "description": "Use essa API para criar um novo usuário",
         "operationId": "Bank_CreateUser",
         "responses": {
           "200": {
@@ -55,6 +57,8 @@
     },
     "/v1/login_user": {
       "post": {
+        "summary": "Faz o login do usuário",
+        "description": "Use essa API para fazer login, ganhar um token de acesso e um de atualização (refresh)",
         "operationId": "Bank_LoginUser",
         "responses": {
           "200": {

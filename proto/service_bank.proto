@@ -12,7 +12,7 @@ option go_package = "github.com/IgorCastilhos/BankApplication/pb";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Bank Application API";
-    version: "1.0";
+    version: "1.1";
     contact: {
       name: "Igor Castilhos";
       url: "https://github.com/IgorCastilhos";
@@ -27,11 +27,19 @@ service Bank {
       post: "/v1/create_user"
       body : "*"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use essa API para criar um novo usuário";
+      summary: "Cria um novo usuário";
+    };
   }
   rpc LoginUser (LoginUserRequest) returns (LoginUserResponse) {
     option (google.api.http) = {
       post: "/v1/login_user"
       body : "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use essa API para fazer login, ganhar um token de acesso e um de atualização (refresh)";
+      summary: "Faz o login do usuário";
     };
   }
 }
