@@ -29,9 +29,9 @@ func main() {
 	}
 
 	store := db.NewStore(connPool)
-	//go runGatewayServer(config, store)
-	//runGrpcServer(config, store)
-	runGinServer(config, store)
+	go runGatewayServer(config, store)
+	runGrpcServer(config, store)
+	//runGinServer(config, store)
 }
 
 func runGrpcServer(config utils.Config, store db.Store) {
@@ -76,8 +76,12 @@ func runGatewayServer(config utils.Config, store db.Store) {
 	if err != nil {
 		log.Fatal("Não foi possível registar um handler server:", err)
 	}
+
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
+
+	fileServer := http.FileServer(http.Dir("./doc/swagger"))
+	mux.Handle("/swagger/", http.StripPrefix("/swagger/", fileServer))
 
 	listener, err := net.Listen("tcp", config.HTTPServerAddress)
 	if err != nil {

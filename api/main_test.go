@@ -3,12 +3,15 @@ package api
 import (
 	db "github.com/IgorCastilhos/BankApplication/db/sqlc"
 	"github.com/IgorCastilhos/BankApplication/utils"
+	"github.com/IgorCastilhos/toolkit/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
 	"time"
 )
+
+var tools toolkit.Tools
 
 func newTestServer(t *testing.T, store db.Store) *Server {
 	config := utils.Config{

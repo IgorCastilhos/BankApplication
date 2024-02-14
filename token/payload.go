@@ -9,7 +9,7 @@ import (
 // Tipos de erro diferentes retornados pela função VerifyToken
 var (
 	ErrInvalidToken = errors.New("token inválido")
-	ErrExpiredToken = errors.New("o token já foi expirado")
+	ErrExpiredToken = errors.New("token expirado")
 )
 
 // Payload contém o conteúdo principal do token
@@ -31,6 +31,7 @@ func NewPayload(username string, role string, duration time.Duration) (*Payload,
 	payload := &Payload{
 		ID:        tokenId,
 		Username:  username,
+		Role:      role,
 		IssuedAt:  time.Now(),
 		ExpiredAt: time.Now().Add(duration),
 	}

@@ -12,7 +12,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/jackc/pgx/v5 v5.5.3
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
-	github.com/lib/pq v1.10.9
 	github.com/o1egl/paseto v1.0.0
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
