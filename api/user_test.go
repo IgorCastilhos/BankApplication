@@ -1,22 +1,22 @@
 package api
 
 import (
-    "bytes"
-    "database/sql"
-    "encoding/json"
-    "fmt"
-    "github.com/IgorCastilhos/BankApplication/utils"
-    "io"
-    "net/http"
-    "net/http/httptest"
-    "reflect"
-    "testing"
-    
-    mockdb "github.com/IgorCastilhos/BankApplication/db/mock"
-    db "github.com/IgorCastilhos/BankApplication/db/sqlc"
-    "github.com/gin-gonic/gin"
-    "github.com/golang/mock/gomock"
-    "github.com/stretchr/testify/require"
+	"bytes"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"github.com/IgorCastilhos/BankApplication/utils"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"reflect"
+	"testing"
+
+	mockdb "github.com/IgorCastilhos/BankApplication/db/mock"
+	db "github.com/IgorCastilhos/BankApplication/db/sqlc"
+	"github.com/gin-gonic/gin"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
 type eqCreateUserParamsMatcher struct {
@@ -40,7 +40,7 @@ func (e eqCreateUserParamsMatcher) Matches(x interface{}) bool {
 }
 
 func (e eqCreateUserParamsMatcher) String() string {
-	return fmt.Sprintf("matches arg %v and password %v", e.arg, e.password)
+	return fmt.Sprintf("arguemnto correspondente %v e senha %v", e.arg, e.password)
 }
 
 func EqCreateUserParams(arg db.CreateUserParams, password string) gomock.Matcher {
@@ -54,7 +54,7 @@ func TestCreateUserAPI(t *testing.T) {
 		name          string
 		body          gin.H
 		buildStubs    func(store *mockdb.MockStore)
-		checkResponse func(recoder *httptest.ResponseRecorder)
+		checkResponse func(recorder *httptest.ResponseRecorder)
 	}{
 		{
 			name: "OK",
@@ -81,7 +81,7 @@ func TestCreateUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "InternalError",
+			name: "Erro Interno",
 			body: gin.H{
 				"username":  user.Username,
 				"password":  password,
@@ -99,7 +99,7 @@ func TestCreateUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "DuplicateUsername",
+			name: "Nome de usuário duplicado",
 			body: gin.H{
 				"username":  user.Username,
 				"password":  password,
@@ -117,7 +117,7 @@ func TestCreateUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "InvalidUsername",
+			name: "Nome de usuário inválido",
 			body: gin.H{
 				"username":  "invalid-user#1",
 				"password":  password,
@@ -134,7 +134,7 @@ func TestCreateUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "InvalidEmail",
+			name: "Email Inválido",
 			body: gin.H{
 				"username":  user.Username,
 				"password":  password,
@@ -151,7 +151,7 @@ func TestCreateUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "TooShortPassword",
+			name: "Senha muito curta",
 			body: gin.H{
 				"username":  user.Username,
 				"password":  "123",
@@ -225,7 +225,7 @@ func TestLoginUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "UserNotFound",
+			name: "Usuário Não Encontrado",
 			body: gin.H{
 				"username": "NotFound",
 				"password": password,
@@ -241,7 +241,7 @@ func TestLoginUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "IncorrectPassword",
+			name: "Senha incorreta",
 			body: gin.H{
 				"username": user.Username,
 				"password": "incorrect",
@@ -257,7 +257,7 @@ func TestLoginUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "InternalError",
+			name: "Erro interno",
 			body: gin.H{
 				"username": user.Username,
 				"password": password,
@@ -273,7 +273,7 @@ func TestLoginUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "InvalidUsername",
+			name: "Nome de usuário inválido",
 			body: gin.H{
 				"username": "invalid-user#1",
 				"password": password,
