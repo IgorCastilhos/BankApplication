@@ -33,13 +33,14 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v3
-
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.22'
         id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3
 
       - name: Install golang-migrate
         run: |
