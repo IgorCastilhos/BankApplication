@@ -1,4 +1,4 @@
-[![ci](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml/badge.svg)](https://github.com/IgorCastilhos/BankApplication/actions/workflows/ci.yml)
+[![Run unit tests](https://github.com/IgorCastilhos/BankApplication/actions/workflows/test.yml/badge.svg)](https://github.com/IgorCastilhos/BankApplication/actions/workflows/test.yml)
 # Bank Application
 
 
