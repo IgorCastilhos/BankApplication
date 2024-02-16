@@ -125,8 +125,10 @@ func runGatewayServer(config utils.Config, store db.Store) {
     if err != nil {
         log.Fatal().Err(err).Msg("não foi possível criar um listener:")
     }
+    
     log.Info().Msgf("iniciando servidor HTTP Gateway na porta %s", listener.Addr().String())
-    err = http.Serve(listener, mux)
+    handler := grpcApi.HTTPLogger(mux)
+    err = http.Serve(listener, handler)
     if err != nil {
         log.Fatal().Err(err).Msg("não foi possível iniciar servidor HTTP Gateway:")
     }
