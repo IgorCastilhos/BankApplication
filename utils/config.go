@@ -8,6 +8,7 @@ import (
 // Config armazenará todas as configurações da aplicação.
 // Os valores serão lidos pelo viper a partir de um arquivo ou das variáveis de ambiente.
 type Config struct {
+    Environment          string        `mapstructure:"ENVIRONMENT"`
     DBSource             string        `mapstructure:"DB_SOURCE"`
     MigrationURL         string        `mapstructure:"MIGRATION_URL"`
     HTTPServerAddress    string        `mapstructure:"HTTP_SERVER_ADDRESS"`
