@@ -9,11 +9,13 @@ import (
     "github.com/IgorCastilhos/BankApplication/grpcApi"
     "github.com/IgorCastilhos/BankApplication/pb"
     "github.com/IgorCastilhos/BankApplication/utils"
+    "github.com/IgorCastilhos/BankApplication/worker"
     "github.com/golang-migrate/migrate/v4"
     _ "github.com/golang-migrate/migrate/v4"
     _ "github.com/golang-migrate/migrate/v4/database/postgres"
     _ "github.com/golang-migrate/migrate/v4/source/file"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+    "github.com/hibiken/asynq"
     "github.com/jackc/pgx/v5/pgxpool"
     "github.com/rakyll/statik/fs"
     "github.com/rs/zerolog"
@@ -46,8 +48,14 @@ func main() {
     
     store := db.NewStore(connPool)
     
-    go runGatewayServer(config, store)
-    runGrpcServer(config, store)
+    redisOpt := asynq.RedisClientOpt{
+        Addr: config.RedisAddress,
+    }
+    
+    taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
+    go runTaskProcessor(redisOpt, store)
+    go runGatewayServer(config, store, taskDistributor)
+    runGrpcServer(config, store, taskDistributor)
 }
 
 func runDBMigration(migrationURL, dbSource string) {
@@ -63,8 +71,17 @@ func runDBMigration(migrationURL, dbSource string) {
     log.Info().Msg("migration realizada com sucesso")
 }
 
-func runGrpcServer(config utils.Config, store db.Store) {
-    server, err := grpcApi.NewServer(config, store)
+func runTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) {
+    taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store)
+    log.Info().Msg("iniciando processador de tarefas")
+    err := taskProcessor.Start()
+    if err != nil {
+        log.Fatal().Err(err).Msg("falha ao iniciar processador de tarefas")
+    }
+}
+
+func runGrpcServer(config utils.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+    server, err := grpcApi.NewServer(config, store, taskDistributor)
     if err != nil {
         log.Fatal().Err(err).Msg("não foi possível criar o servidor:")
     }
@@ -86,8 +103,8 @@ func runGrpcServer(config utils.Config, store db.Store) {
     }
 }
 
-func runGatewayServer(config utils.Config, store db.Store) {
-    server, err := grpcApi.NewServer(config, store)
+func runGatewayServer(config utils.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+    server, err := grpcApi.NewServer(config, store, taskDistributor)
     if err != nil {
         log.Fatal().Err(err).Msg("não foi possível criar o servidor:")
     }
