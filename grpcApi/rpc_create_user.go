@@ -25,14 +25,28 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
     }
     
     // Se for válido...
-    arg := db.CreateUserParams{
-        Username:       req.GetUsername(),
-        HashedPassword: hashedPassword,
-        FullName:       req.GetFullName(),
-        Email:          req.GetEmail(),
+    arg := db.CreateUserTxParams{
+        CreateUserParams: db.CreateUserParams{
+            Username:       req.GetUsername(),
+            HashedPassword: hashedPassword,
+            FullName:       req.GetFullName(),
+            Email:          req.GetEmail(),
+        },
+        AfterCreate: func(user db.User) error {
+            taskPayload := &worker.PayloadSendVerifyEmail{
+                Username: user.Username,
+            }
+            opts := []asynq.Option{
+                asynq.MaxRetry(10),
+                asynq.ProcessIn(10 * time.Second),
+                asynq.Queue(worker.QueueCritical),
+            }
+            
+            return server.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
+        },
     }
     
-    user, err := server.store.CreateUser(ctx, arg)
+    txResult, err := server.store.CreateUserTx(ctx, arg)
     if err != nil {
         if db.ErrorCode(err) == db.UniqueViolation {
             return nil, status.Errorf(codes.AlreadyExists, "nome de usuário já existe: %s", err)
@@ -41,22 +55,9 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
     }
     
     // TODO: usar transaction db
-    taskPayload := &worker.PayloadSendVerifyEmail{
-        Username: user.Username,
-    }
-    opts := []asynq.Option{
-        asynq.MaxRetry(10),
-        asynq.ProcessIn(10 * time.Second),
-        asynq.Queue(worker.QueueCritical),
-    }
-    
-    err = server.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
-    if err != nil {
-        return nil, status.Errorf(codes.Internal, "falha ao distribuir tarefas para envio de email: %s", err)
-    }
     
     response := &pb.CreateUserResponse{
-        User: convertUser(user),
+        User: convertUser(txResult.User),
     }
     return response, nil
 }
