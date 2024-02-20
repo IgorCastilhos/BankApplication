@@ -12,11 +12,8 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
 
-    # Service containers to run with `container-job`
     services:
-      # Label used to access the service container
       postgres:
-        # Docker Hub image
         image: postgres:16.1
         # Provide the password for postgres
         env:
@@ -33,7 +30,7 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Set up Go
+      - name: Set up Go 1.x
         uses: actions/setup-go@v4
         with:
           go-version: '1.22'

@@ -2,6 +2,9 @@ DB_URL=postgresql://root:secret@localhost:5432/bank?sslmode=disable
 
 # Digite -> Make [Nome do comando]
 
+network:
+	docker network create bank-network
+
 postgres:
 	docker run --name postgres16.1 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:16.1-alpine
 
@@ -49,6 +52,7 @@ server:
 
 mock:
 	mockgen -package mockdb -destination db/mock/store.go  github.com/IgorCastilhos/BankApplication/db/sqlc Store
+	mockgen -package mockwk -destination worker/mock/distributor.go  github.com/IgorCastilhos/BankApplication/worker TaskDistributor
 
 proto:
 	rm -f pb/*.go
