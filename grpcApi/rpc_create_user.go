@@ -2,6 +2,7 @@ package grpcApi
 
 import (
     "context"
+    "fmt"
     db "github.com/IgorCastilhos/BankApplication/db/sqlc"
     "github.com/IgorCastilhos/BankApplication/pb"
     "github.com/IgorCastilhos/BankApplication/utils"
@@ -15,10 +16,13 @@ import (
 )
 
 func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+    fmt.Println("Requisição válida")
     violations := validateCreateUserRequest(req)
     if violations != nil {
         return nil, invalidArgumentError(violations)
     }
+    
+    fmt.Println("Requisição:", req)
     hashedPassword, err := utils.HashPassword(req.GetPassword())
     if err != nil {
         return nil, status.Errorf(codes.Internal, "falhou ao fazer o hash da senha: %s", err)
@@ -46,6 +50,7 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
         },
     }
     
+    fmt.Println("Cria uma transferência entre usuários", arg)
     txResult, err := server.store.CreateUserTx(ctx, arg)
     if err != nil {
         if db.ErrorCode(err) == db.UniqueViolation {
@@ -53,8 +58,6 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
         }
         return nil, status.Errorf(codes.Internal, "falhou ao criar um usuário: %s", err)
     }
-    
-    // TODO: usar transaction db
     
     response := &pb.CreateUserResponse{
         User: convertUser(txResult.User),

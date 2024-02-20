@@ -3,9 +3,7 @@ package worker
 import (
     "context"
     "encoding/json"
-    "errors"
     "fmt"
-    db "github.com/IgorCastilhos/BankApplication/db/sqlc"
     "github.com/hibiken/asynq"
     "github.com/rs/zerolog/log"
 )
@@ -43,9 +41,6 @@ func (processor *RedisTaskProcessor) ProcessTaskSendVerifyEmail(ctx context.Cont
     
     user, err := processor.store.GetUser(ctx, payload.Username)
     if err != nil {
-        if errors.Is(err, db.ErrRecordNotFound) {
-            return fmt.Errorf("usuário não existe: %w", asynq.SkipRetry)
-        }
         return fmt.Errorf("falha ao buscar usuário: %w", err)
     }
     
